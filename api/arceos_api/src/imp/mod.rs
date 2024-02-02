@@ -24,7 +24,9 @@ mod stdio {
     }
 
     pub fn ax_console_write_bytes(buf: &[u8]) -> crate::AxResult<usize> {
+        axhal::console::write_bytes(b"\x1B[32m");
         axhal::console::write_bytes(buf);
+        axhal::console::write_bytes(b"\x1B[m");
         Ok(buf.len())
     }
 
