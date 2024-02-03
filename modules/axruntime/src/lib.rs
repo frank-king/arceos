@@ -140,6 +140,20 @@ pub extern "C" fn rust_main(cpu_id: usize, dtb: usize) -> ! {
     #[cfg(feature = "alloc")]
     init_allocator();
 
+    // Parse fdt for early memory info
+    let dtb_info = axdtb::parse_dtb(dtb).unwrap();
+
+    info!("DTB info: ==================================");
+    info!(
+        "Memory: {:#x}, size: {:#x}",
+        dtb_info.memory_addr, dtb_info.memory_size
+    );
+    info!("virtio_mmio[{}]:", dtb_info.mmio_regions.len());
+    for (addr, size) in dtb_info.mmio_regions {
+        info!("\t{addr:#x}, size: {size:#x}");
+    }
+    info!("============================================");
+
     #[cfg(feature = "paging")]
     {
         info!("Initialize kernel page table...");
